@@ -3,6 +3,7 @@ from collections import Dict, List
 # item1,"ite,m2",item3
 
 
+@value
 struct CsvReader:
     # var data: Dict[String,String]
     var headers: List[String]
@@ -17,23 +18,22 @@ struct CsvReader:
 
     fn __init__(
         inout self,
-        owned str: String,
+        owned in_str: String,
         delimiter: String = ",",
         quotation_mark: String = '"',
     ):
-        self.raw = str
+        self.raw = in_str
         self.delimiter = delimiter
         self.QM = quotation_mark
         self.CR = "\n"
         self.LF = "\r"
         self.row_count = 0
         self.col_count = 0
-        self.headers.__init__()
-        self.rows.__init__()
-        self.rows[0].__init__()
+        self.headers = List(delimiter)
+        self.rows = List(List(delimiter))
         self.create_reader()
 
-    # @always_inline
+    @always_inline
     fn create_reader(inout self):
         var length: Int = self.raw.__len__()
         var pos: Int = 0
@@ -44,6 +44,7 @@ struct CsvReader:
 
         while pos < length:
             var char: String = self.raw[pos]
+            print(pos, "char: ", char)
             # --------
 
             if in_quotes:
@@ -51,7 +52,7 @@ struct CsvReader:
                     pos += 1
                     continue
                 else:
-                    in_quotes = not in_quotes
+                    in_quotes = False
                     pos += 1
                     continue
 
@@ -63,32 +64,33 @@ struct CsvReader:
             # --------
 
             if char == self.delimiter:
-                print("de", pos)
-
                 self.rows[self.row_count][col] = self.raw[col_start:pos]
-
-                if self.row_count == 0:
-                    self.headers[col] = self.raw[col_start:pos]
-                    self.col_count += 1
 
                 col += 1
                 col_start = pos + 1
+
+                if self.row_count == 0:
+                    self.col_count += 1
+
+                print("delimiter: ", pos, self.raw[pos])
+
             # --------
             # case end of row
             elif char == self.CR:
-                print(char, "newline")
-
+                print("newline: ", char)
+                # self.rows.resize(self.row_count + 1)
                 self.rows[self.row_count][col] = self.raw[row_start:pos]
 
                 if self.raw[pos + 1]:
+                    print("new")
                     self.row_count += 1
                     col_start = pos + 1
                     row_start = pos + 1
                     col = 0
-            # -------
             pos += 1
+            # -------
         # -------------
-        print(self.rows[0][0])
+        print(self.rows[0][1])
 
     # ---------------------
 
@@ -96,10 +98,11 @@ struct CsvReader:
 def main():
     from pathlib import Path, cwd
 
-    var loc = cwd()
-    var test_csv = loc.joinpath("test.csv")
+    var test_csv = cwd().joinpath("test.csv")
     with open(test_csv, "r") as fi:
         try:
-            var rd = CsvReader(fi.read())
+            var text = fi.read()
+            var rd = CsvReader(text)
+            print(rd.col_count)
         except:
             print("error")
