@@ -1,4 +1,6 @@
 from collections import Dict, List
+from pathlib import Path, cwd
+from sys import argv
 
 # item1,"ite,m2",item3
 
@@ -7,11 +9,13 @@ from collections import Dict, List
 struct CsvReader:
     # var data: Dict[String,String]
     var headers: List[String]
-    var rows: List[List[String]]
+    var elements: List[String]
     var raw: String
+    var length: Int
     var delimiter: String
+    var escape: String
     var CR: String
-    var LF: String
+    var LFCR: String
     var QM: String
     var row_count: Int
     var col_count: Int
@@ -23,86 +27,77 @@ struct CsvReader:
         quotation_mark: String = '"',
     ):
         self.raw = in_str
+        self.length = self.raw.__len__()
         self.delimiter = delimiter
         self.QM = quotation_mark
+        self.escape = "\\"
         self.CR = "\n"
-        self.LF = "\r"
+        self.LFCR = "\r\n"
         self.row_count = 0
         self.col_count = 0
-        self.headers = List(delimiter)
-        self.rows = List(List(delimiter))
+        self.elements = List[String]()
+        self.headers = List[String]()
         self.create_reader()
 
     @always_inline
     fn create_reader(inout self):
-        var length: Int = self.raw.__len__()
-        var pos: Int = 0
-        var row_start: Int = 0
+        # var row_start: Int = 0
         var col: Int = 0
         var col_start: Int = 0
         var in_quotes: Bool = False
-
-        while pos < length:
+        for pos in range(self.length):
             var char: String = self.raw[pos]
-            print(pos, "char: ", char)
+            # print(pos, "char: ", char)
             # --------
 
             if in_quotes:
                 if char != self.QM:
-                    pos += 1
                     continue
                 else:
                     in_quotes = False
-                    pos += 1
                     continue
-
+            # if in QM, ignore any cases
             if char == self.QM:
                 in_quotes = True
-                pos += 1
                 continue
-            # ignore any cases
             # --------
 
             if char == self.delimiter:
-                self.rows[self.row_count][col] = self.raw[col_start:pos]
+                self.elements.append(self.raw[col_start:pos])
 
-                col += 1
                 col_start = pos + 1
 
                 if self.row_count == 0:
                     self.col_count += 1
 
-                print("delimiter: ", pos, self.raw[pos])
-
             # --------
             # case end of row
-            elif char == self.CR:
-                print("newline: ", char)
-                # self.rows.resize(self.row_count + 1)
-                self.rows[self.row_count][col] = self.raw[row_start:pos]
+            elif char == self.CR or char == self.LFCR:
+                self.elements.append(self.raw[col_start:pos])
 
-                if self.raw[pos + 1]:
-                    print("new")
+                if self.row_count == 0:
+                    self.col_count += 1
+
+                if pos + 1 < self.length:
                     self.row_count += 1
                     col_start = pos + 1
-                    row_start = pos + 1
-                    col = 0
-            pos += 1
+
             # -------
         # -------------
-        print(self.rows[0][1])
 
     # ---------------------
 
 
 def main():
-    from pathlib import Path, cwd
+    try:
+        in_csv = Path(argv()[0])
+        # print(in_csv)
 
-    var test_csv = cwd().joinpath("test.csv")
-    with open(test_csv, "r") as fi:
-        try:
+        with open(in_csv, "r") as fi:
             var text = fi.read()
             var rd = CsvReader(text)
-            print(rd.col_count)
-        except:
-            print("error")
+            # print(rd.col_count)
+            # for x in range(len(rd.elements)):
+            #     print(rd.elements[x])
+    except error:
+        print(error)
