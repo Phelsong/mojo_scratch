@@ -97,7 +97,7 @@ def main():
             var text = fi.read()
             var rd = CsvReader(text)
             # print(rd.col_count)
-            # for x in range(len(rd.elements)):
-            #     print(rd.elements[x])
+            for x in range(len(rd.elements)):
+                print(rd.elements[x])
     except error:
         print(error)
