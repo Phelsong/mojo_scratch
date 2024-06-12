@@ -23,8 +23,8 @@ struct CsvReader:
     fn __init__(
         inout self,
         owned in_str: String,
-        delimiter: String = ",",
-        quotation_mark: String = '"',
+        owned delimiter: String = ",",
+        owned quotation_mark: String = '"',
     ):
         self.raw = in_str
         self.length = self.raw.__len__()
@@ -89,8 +89,9 @@ struct CsvReader:
 
 
 def main():
-    try:
-        in_csv = Path(argv()[0])
+    try: 
+        # in_csv = Path(argv()[0])
+        in_csv = Path(argv()[1])
         # print(in_csv)
 
         with open(in_csv, "r") as fi:
@@ -99,5 +100,5 @@ def main():
             # print(rd.col_count)
             for x in range(len(rd.elements)):
                 print(rd.elements[x])
-    except error:
-        print(error)
+    except Exception:
+        print("error: ", Exception)
