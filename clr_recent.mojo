@@ -8,5 +8,7 @@ fn main():
     try:
         with open(recent_cache, "w") as fi:
             fi.write(String(""))
+            var blank: String = ""
+            fi.write(blank)
     except Exception:
         print("error")
