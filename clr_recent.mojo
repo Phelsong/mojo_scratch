@@ -12,3 +12,4 @@ fn main():
             fi.write(blank)
     except Exception:
         print("error")
+        
