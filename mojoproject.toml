@@ -1,0 +1,14 @@
+[project]
+authors = ["Josh S Wilkinson <joshswilkinson@pm.me>"]
+channels = ["conda-forge", "https://conda.modular.com/max"]
+description = "Add a short description here"
+name = "mojo_scratch"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+test = "mojo test.mojo test.csv"
+build_clr = "mojo build clr_recent.mojo"
+
+[dependencies]
+max = ">=24.5.0,<25"
