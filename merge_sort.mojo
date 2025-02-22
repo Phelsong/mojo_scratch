@@ -7,8 +7,9 @@ fn merge_sort(inout arr: List[Int]) -> List[Int]:
 
     var sort_left = merge_sort(Le)
     var sort_right = merge_sort(Ri)
-    var out_array:List[Int] = run_sort(sort_left, sort_right)
+    var out_array: List[Int] = run_sort(sort_left, sort_right)
     return out_array
+
 
 fn run_sort(inout left: List[Int], inout right: List[Int]) -> List[Int]:
     var out_arr = List[Int]()
@@ -30,7 +31,7 @@ fn run_sort(inout left: List[Int], inout right: List[Int]) -> List[Int]:
 
 
 def main():
-    var array: List[Int] = List[Int](1,2,5,3,9,1,14,22,1,14)
+    var array: List[Int] = List[Int](1, 2, 5, 3, 9, 1, 14, 22, 1, 14)
     print(array.__str__())
     var sorted_array = merge_sort(array)
     print(sorted_array.__str__())

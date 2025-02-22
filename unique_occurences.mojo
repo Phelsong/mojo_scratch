@@ -1,6 +1,7 @@
 from testing import assert_true
 from merge_sort import merge_sort
 
+
 fn uniqueOccurrences(inout in_arr: List[Int]) -> Bool:
     var arr = merge_sort(in_arr)
     var results = Set[Int]()
@@ -25,7 +26,7 @@ fn uniqueOccurrences(inout in_arr: List[Int]) -> Bool:
 
 
 fn main():
-    var arr = List[Int](1,2,5,3,9,1,14,22,1,14)
+    var arr = List[Int](1, 2, 5, 3, 9, 1, 14, 22, 1, 14)
     print(uniqueOccurrences(arr))
-    var t_arr = List[Int](1,2,5,2,5,5,5,5,3,3,3)
+    var t_arr = List[Int](1, 2, 5, 2, 5, 5, 5, 5, 3, 3, 3)
     print(uniqueOccurrences(t_arr))
